@@ -124,6 +124,7 @@ while (count <= 10) {
 <br>
 <br>
 <br>
+
 ##### 예시
 
 ```java
@@ -177,6 +178,7 @@ for (int i = 1; i <= 10; i++) {
 <br>
 <br>
 ##### 예시
+
 ```java
 double doubleValue = 1.5;
 int intValue;
