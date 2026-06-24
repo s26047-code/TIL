@@ -2,25 +2,47 @@
 
 ### Git Flow는 협업 시 코드 충돌을 줄이고 안정적인 개발 및 배포를 하기 위해 사용하는 브랜치 관리 전략이다.
 
-​
+<br>
 
-**main** : 배포하는 용도로 쓰는 최종 브랜치
+## 사용 목적
 
-**develop** : 개발용 브랜치로, 이 브랜치를 기준으로 feature 브랜치를 따고, 각 feature를 합치는 브랜치
+- 여러 개발자가 동시에 작업할 수 있도록 한다.
+- 기능별로 개발 내용을 분리/교체 할 수 있다.
+- 코드 리뷰를 통해 코드 품질 향상된다.
+- 배포 중인 코드와 개발 중인 코드를 분리할 수 있다.
+- 버그 수정 및 유지보수를 체계적으로 관리 가능하다.
 
-**feature**: 단위 기능 개발용 브랜치
+<br>
 
-**release**: 다음배포를 위해 기능에 문제가 없는지 체크 용도의 브랜치
+## 브랜치 종류
 
-**hotfix**: 배포가 되고 나서 버그 발생 시 긴급 수정하는 브랜치
+**main** : 실제 배포되는 최종 브랜치
 
-**support**: 버전 호환성을 위한 브랜치
+**develop** : 개발한 기능들을 모아두는 브랜치
+
+**feature** : 기능 개발용 브랜치
+
+**release** : 배포 전 테스트 및 검증용 브랜치
+
+**hotfix** : 운영 중 긴급 버그 수정 브랜치
+
+**support** : 버전 호환성 유지 브랜치
+
+<br>
+
+## 브랜치 구조
+
+```
+main
+ └─ develop
+      ├─ feature/login
+      ├─ feature/signup
+      └─ feature/board
+```
 
 <br>
 <br>
 <br>
-
-
 
 ## Git Flow 진행 과정
 
@@ -31,52 +53,52 @@ git checkout develop
 git pull
 ```
 
-- 최신 코드 가져오기
+- 팀원이 수정한 최신 코드를 내 파일로 불러온다.
 
 ### 2. 기능 브랜치 생성
 
-```
-git checkout -b feature/login
+```bash
+git checkout -b feature/---
 ```
 
-- 기능 개발 시작
+- 어떠한 기능용 브랜치를 따로 생성해 개발한다.
 
 ### 3. 기능 개발 및 저장
 
-```
+```bash
 git add .
-git commit -m "feat: login"
+git commit -m "feat: ---"
 ```
 
 - 기능 구현 후 커밋
 
 ### 4. GitHub 업로드
 
-```
-git push -u origin feature/login
+```bash
+git push -u origin feature/---
 ```
 
 - 브랜치 업로드
 
 ### 5. Pull Request(PR)
 
-```
-feature/login
+```text
+feature/---
 ↓
 develop
 ```
 
-- 코드 리뷰 요청
+- 코드 리뷰를 요청 후,
 
 ### 6. Merge
 
 ```text
-feature/login
+feature/---
 ↓
 develop
 ```
 
-- 기능 반영
+- 리뷰가 끝나면 머지로 최종 수정 완료한다.
 
 ### 7. 배포
 
@@ -86,4 +108,6 @@ develop
 main
 ```
 
-- 테스트 완료 후 배포
+* 테스트 완료 후 배포.
+
+
