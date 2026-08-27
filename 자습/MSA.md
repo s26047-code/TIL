@@ -186,3 +186,34 @@ SAGA 패턴은 위의 두가지의 방식으로 사용되며, 중간에 작업�
 이는 왜냐하면 `Choreography`는 서비스끼리 이벤트만 주고 받기에 단계가 복잡해질수록 언급했던 단점이 발생하기 때문이다.
 
 그러므로 중앙 제어자가 프로세스를 한번에 관리해주고, 모니터링과 트랜잭션이 명확한 `Orchestration`방식이 SAGA 패턴으로써 사용된다.
+
+<br>
+<br>
+<br>
+<br>
+
+# 실사용 방법
+
+
+### 1. Eureka Server 생성
+
+별도의 유레카용 Spring Boot 프로젝트를 생성하고 의존성을 추가한다.
+
+```gradle
+implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+```
+
+<br>
+
+### 2. 각 제작한 서비스에 유레카 의존성 추가
+```gradle
+implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+```
+그 후 appilcation에도 유레카 서버 주소를 기입한다. (이 과정을 마치면 해당 서비스가 유레카에 등록되게 된다)
+
+<br>
+
+### 3. Gateway도 Eureka Client로 연결
+Gateway에도 유레카 의존성을 추가하고 유레카 서버 주소를 설정한다.
+
+그 후, Gateway에서 서비스 이름을 이용해 라우팅하면 lb://USER-SERVICE를 통해 유레카에 등록된다. 이제 서비스의 위치를 찾아 요청을 전달하면 연동에 성공할 수 있다!
