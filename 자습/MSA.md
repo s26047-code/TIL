@@ -192,7 +192,7 @@ SAGA 패턴은 위의 두가지의 방식으로 사용되며, 중간에 작업�
 <br>
 <br>
 
-# 실사용 방법
+# MSA 실사용 방법
 
 
 ### 1. Eureka Server 생성
@@ -217,3 +217,101 @@ implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-cl
 Gateway에도 유레카 의존성을 추가하고 유레카 서버 주소를 설정한다.
 
 그 후, Gateway에서 서비스 이름을 이용해 라우팅하면 lb://USER-SERVICE를 통해 유레카에 등록된다. 이제 서비스의 위치를 찾아 요청을 전달하면 연동에 성공할 수 있다!
+
+<br>
+<br>
+<br>
+<br>
+
+# AOP 사용과정
+AOP는 어떤 로직을 기준으로 핵심적인 관점, 부가적인 관점으로 나누어서 보고 그 관점을 기준으로 기능을 하나의 단위로 묶는 것을 뜻한다.
+
+예를 들어 어떠한 기능을 만들 때 해당 기능의 로그를 남기고 싶다고 가정하자.
+
+만약 AOP를 사용하지 않고 로그를 남기려면, 모든 메서드에 
+
+```gradle
+public void class() {
+    System.out.println("로그");
+
+}
+```
+같은 코드를 일일히 작성해주어야 한다.
+
+<br>
+
+그렇지만 나는 그걸 매번 쓰고 싶지가 않다!
+그래서 사용하는 것이 바로 AOP 프로그래밍 방식이라고 정리할 수 있겠다.
+
+<br>
+<br>
+
+### AOP를 사용한다면?
+AOP를 사용하지 않고 어떠한 객체를 호출한다면 당연히 바로 그 객체가 실행되겠지만,
+
+AOP를 사용한다면 <mark>프록시</mark>가 대신 정보를 담은 객체를 호출할 수 있게 해준다.
+
+> ### <span style="color: gray;">프록시란?
+> 특정 실제 객체를 대신해서 호출을 받고, AOP 같은 부가 작업을 한 뒤 그 실제 객체로 호출을 전달하는 **대리 객체**이다.
+>
+> 여러 기능들에 공통 기능을 한번에 호출하고 싶은데, 각 서비스는 모두 다르고 나는 코드를 요약해서 쓰고 싶다.
+>
+> 그러니 그 객체들을 **대신하여 호출해주는 대리인**이라고 이해하면 될 것이다!
+
+<br>
+<br>
+
+### 그렇다면
+예시로
+로그를 만들어주는 코드를 봐보자.
+```gradle
+@Around("execution(* com.example.service..*(..))")
+public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
+
+    System.out.println("로그 시작");
+
+    Object result = joinPoint.proceed();
+
+    System.out.println("로그 종료");
+
+    return result;
+}
+```
+
+<br>
+
+이때 이 코드에서 
+```gradle
+@Around("execution(* com.example.service..*(..))")
+```
+이 부분이 바로 어떤 메서드에 AOP를 적용할지 정하는 조건이다.
+
+
+> com.example.service 패키지 아래에 있는 메서드들에 적용하라는 뜻
+
+> 이를 사용하기 위한 Advice 어노테이션으론 `Before`, `After`, `Around`가 있다.
+> Before은 대상 메서드가 실행되기 전에 실행하라는 것이고, After는 반대, Around는 실행 전 후를 감싸 직접 제어한다고 알아두자.
+
+<br>
+
+> **그 외 어노테이션** <br>
+> `@Aspect`          → AOP 클래스임을 명시 <br>
+`@Pointcut`        → AOP 적용 위치 지정
+<br>
+`@AfterReturning`  → 메서드가 정상 반환되면 실행
+<br>
+`@AfterThrowing`   → 예외가 발생하면 실행
+
+<br>
+<br>
+<br>
+<br>
+
+
+또한 위 코드에서 
+```gradle
+Object result = joinPoint.proceed();
+```
+이 부분은 AOP가 가로챈 원래 실행하려던 메서드를 실제로 실행하고, 그 반환값을 result에 저장하는 것을 의미한다.
+
+이 과정에서 프록시는 메서드 호출을 먼저 받아 AOP와 같은 부가 기능을 실행한 뒤, joinPoint.proceed()를 통해 실제 객체의 메서드가 실행되게끔 전달할 수 있다!
