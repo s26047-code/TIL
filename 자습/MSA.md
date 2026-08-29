@@ -312,6 +312,80 @@ public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
 ```gradle
 Object result = joinPoint.proceed();
 ```
-이 부분은 AOP가 가로챈 원래 실행하려던 메서드를 실제로 실행하고, 그 반환값을 result에 저장하는 것을 의미한다.
+이 부분은 AOP가 가로챈 원래 실행하려던 메서드를 실제로 실행하고, 그 **반환값을 result에 저장**하는 것을 의미한다.
 
 이 과정에서 프록시는 메서드 호출을 먼저 받아 AOP와 같은 부가 기능을 실행한 뒤, joinPoint.proceed()를 통해 실제 객체의 메서드가 실행되게끔 전달할 수 있다!
+
+
+<br>
+<br>
+<br>
+<br>
+
+# SAGA 패턴 코드
+트랙잰션 처리 중 중간에 실패하면 이미 성공한 이전 작업을 보상 작업으로 되돌리는 것이 SAGA 패턴이다.
+
+예를 들어, 결재와 재고 감소 같은 반드시 함께 이루어져야 하는 기능이 있다.
+
+이때 주문 서비스의 코드는 아래와 같다.
+```gradle
+public void createOrder(Long orderId) {
+
+    // 주문 저장
+    orderRepository.save(new Order(orderId));
+
+    // 주문 생성 이벤트 발행
+    kafkaTemplate.send(
+        "order-created",
+        new OrderCreatedEvent(orderId)
+    );
+}
+```
+<br>
+
+이 코드에서 
+```gradle
+kafkaTemplate.send(...)
+```
+라는 부분이 있는데, 이것이 바로 주문을 받았다는 이벤트를 카프카에 보내는 것이다.
+
+<br>
+
+그러면 이벤트를 받은 카프카의 `"order-completed"`라는 Topic에 `orderId`가 들어가게 되고,
+
+다음으로 진행되어야하는 서비스인 재고 서비스에 있는 `@KafkaListener` 코드로 위의 Topic 메세지를 받아와 처리해주는 것이다.
+
+```gradle
+@KafkaListener(topics = "payment-completed")
+public void decreaseStock(Long orderId) {
+
+    stockService.decrease(orderId);
+}
+```
+
+<br>
+
+### 그런데 이때, 재고 감소에 실패했다고 가정해보자.
+그렇다면 SAGA 패턴대로 이미 완료된 작업을 취소하는 보살 작업을 수행해야한다.
+
+```gradle
+@KafkaListener(topics = "stock-failed") public void cancelPayment(Long orderId) { // 보상 작업 paymentService.cancel(orderId); }
+```
+
+위의 코드를 예시로 들자면 이번엔 `stock-failed`가 실패했다는 이벤트를 카프카에 보내고, 결재 서비스는 이 이벤트를 받아 결재를 취소한다.
+
+<br>
+
+이처럼 Saga 패턴에서는 각 작업을 독립적으로 처리하고, 중간에 실패할 경우 이미 성공한 작업에 대해 보상 작업을 수행한다.
+
+물론 각 서비스의 작업이 실패했을 경우 어떤 보상 작업을 수행할지는 미리 설계해야 한다고 한다.
+
+```gradle
+@KafkaListener(topics = "실패이벤트")
+public void compensate(Long orderId) {
+
+    paymentService.cancel(orderId);
+
+    //보상작업
+}
+```
