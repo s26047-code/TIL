@@ -66,7 +66,7 @@ MSA 방식의 경우 전체 시스템이 분산되어 있어 <mark>확장성과 
 
 > ### <span style="color: gray;">Eureka</span>
 >
-> <span style="color: gray;">MSA는 **서버마다 IP와 Port가 다르므로, 서비스를 중앙에서 관리하기 위해** 각 정보들을 한 곳에 등록해두고, Gatewqy가 조회하여 사용한다.</span>
+> <span style="color: gray;">MSA는 **서버마다 IP와 Port가 다르므로, 서비스를 중앙에서 관리하기 위해** 각 정보들을 한 곳에 등록해두고, Gateway가 조회하여 사용한다.</span>
 
 
 
