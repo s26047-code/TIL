@@ -9,6 +9,7 @@
 <br>
 <br>
 <br>
+<br>
 
 
 
@@ -19,6 +20,7 @@
 
 ㄴ> 이때 사용되는 외부 (<small>객체를 관리하고 관리하는 주체</small>) 를 스프링 컨테이너라고 한다.
 
+<br>
 <br>
 <br>
 <br>
@@ -75,12 +77,14 @@ AOP는 프로그램을 핵심 관점과 부가 관점으로 나누어 관리하�
 <br>
 <br>
 <br>
+<br>
 
 ## PSA (Portable Service Abstraction)
  PSA를 직역한 뜻은 이식 가능한 서비스 추상화이다. <mark>스프링에서 제공하는 다양한 기술들을 추상화</mark>해 개발자가 쉽게 사용하는 인터페이스를 의미함.
 
 예를 들어, 스프링에서 데이터베이스에 접근하기 위한 기술로는 JPA, MyBatis, JDBC 같은 것이 있다. 이때 여기에서 어떤 기술을 사용하든 일관된 방식으로 데이터베이스에 접근할 수 있도록 인터페이스를 지원하는 것이 PSA라고 한다. 
 
+<br>
 <br>
 <br>
 <br>
@@ -96,6 +100,8 @@ AOP는 프로그램을 핵심 관점과 부가 관점으로 나누어 관리하�
 <br>
 <br>
 <br>
+<br>
+
 
 # 어노테이션 (Annotation)
 자바 등 프로그래밍 언어에서 소스 코드에 코드에 대한 정보를 추가하여 <mark>컴파일러나 런타임 환경에 특별한 정보를 전달하는 @ 형태의 표식</mark>이다. 주로 코드 가독성 향상, 자동 코드 생성, Spring의 설정 단순화 등 빌드 시 문법 체크 등에 사용된다.
@@ -105,6 +111,7 @@ AOP는 프로그램을 핵심 관점과 부가 관점으로 나누어 관리하�
 - 프로그램을 빌드할 때 코드를 자동으로 생성할 수 있도록 정보를 제공한다.
 - 런타임에 특정 기능을 실행하도록 정보를 제공한다.
 
+<br>
 <br>
 <br>
 <br>
@@ -134,6 +141,7 @@ public @interface MyLog {
 <br>
 <br>
 <br>
+<br>
 
 ``@Component`` 	스프링이 자동으로 객체 만들어서 관리하는 기본 등록 표시 <br>
 ``@Service``	비즈니스 로직(서비스)이라고 표시하는 클래스 <br>
@@ -152,6 +160,56 @@ public @interface MyLog {
 <br>
 <br>
 <br>
+<br>
+
+# JPA
+Java Persistence API의 약자로, 자바에서 객체와 관계형 데이터베이스를 매핑하기 위해 사용하는 <mark>ORM(Object-Relational Mapping)</mark> 기술의 표준 인터페이스입니다.
+
+> ### ORM이란?
+> 우리가 일반 적으로 알고 있는 애플리케이션 Class와 RDB(Relational DataBase)의 테이블을 매핑한다는 뜻이며, 기술적으로는 어플리케이션의 객체를 RDB 테이블에 자동으로 영속화 해주는 것이라고 보면된다.
+
+<br>
+<br>
+
+### 왜 사용할까?
+JPA는 반복적인 CRUD를 실행할때 자동으로 매핑을 지원해주어 손쉽게 작성이 가능해진다.
+
+<br>
+<br>
+
+### 핵심 기능
+
+- **영속성 컨텍스트 (Persistence Context)**
+
+    JPA에서 엔티티 객체를 관리하는 저장소이다.  
+
+<br>
+
+- **변경 감지 (Dirty Checking)**
+
+    엔티티의 변경 사항을 감지해 DB에 자동 반영한다.
+    <br>*객체의 값을 수정하고 별도의 SQL을 작성 필요 X*
+
+<br> 
+
+- **지연 로딩 (Lazy Loading)과 즉시 로딩 (Eager Loading)**
+
+    연관된 엔티티를 언제 로드할지 결정한다.
+    <br>*기본적으로 지연 로딩(LAZY)을 사용해 필요할 때만 데이터를 불러오는 것이 성능에 유리*
+
+<br>
+
+- **JPQL (Java Persistence Query Language)**
+
+    JPA는 SQL 대신 JPQL이라는 객체 지향 쿼리 언어를 사용한다.
+    테이블이 아닌 객체를 대상으로 쿼리를 작성할 수 있어 객체 지향적 개발이 가능함.
+    <br>*코드 → JPQL → SQL → DB의 과정을 거침*
+
+<br>
+<br>
+<br>
+<br>
+
 
 # Spring Security
 
@@ -275,3 +333,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 <br>
 <br>
 <br>
+<br>
+
